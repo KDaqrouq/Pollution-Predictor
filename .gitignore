@@ -172,3 +172,14 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Ignore IDE settings
+.idea/
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore virtual environments (if you have one)
+venv/
+.env
