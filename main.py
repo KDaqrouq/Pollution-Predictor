@@ -3,28 +3,28 @@ from datetime import datetime, timedelta
 
 df = pd.read_csv(r"D:\Coding\Hackathon\Urban Air Quality and Health Impact Dataset.csv")
 
-predict = 'Health_Risk_Score' # the variable im training my model to predict
+df = df.drop(columns=[
+    "tempmax", "tempmin", "feelslikemax", "feelslikemin",
+    "feelslike", "precipcover", "preciptype", "snow",
+    "snowdepth", "winddir", "severerisk", "sunrise", "sunriseEpoch",
+    "sunset", "sunsetEpoch", "moonphase", "conditions", "description", "icon",
+    "stations", "source", "Temp_Range", "Heat_Index", "Severity_Score",
+    "Condition_Code","Season", "datetimeEpoch"
+])
 
-essential_vars = [
-    "datetime",         # time reference
-    "City",             # location
-    "temp",             # average temperature
-    "humidity",         # humidity level
-    "dew",              # dew point
-    "windgust",         # wind gust speed
-    "windspeed",        # average wind speed
-    "pressure",         # atmospheric pressure
-    "cloudcover",       # cloud cover %
-    "visibility",       # visibility in miles
-    "uvindex",          # UV index
-    "precip",           # total precipitation
-    "precipprob",       # probability of precipitation
-    "solarradiation",   # solar radiation
-    "solarenergy",      # solar energy
-    "Month",            # the month the data was recorded in
-    "Day_of_Week",      # which day of the week it is
-    "Is_Weekend",       # True if the day is on a weekend else False
-] # the variables I choose to train my model on from the dataset
+df['datetime'] = pd.to_datetime(df['datetime'])
+
+day_encoding = {
+    'Monday': 0,
+    'Tuesday': 1,
+    'Wednesday': 2,
+    'Thursday': 3,
+    'Friday': 4,
+    'Saturday': 5,
+    'Sunday': 6
+}
+
+df['Day_Code'] = df['Day_of_Week'].map(day_encoding)
 
 location_encoding = {
     'New York City' : 0,
@@ -40,6 +40,11 @@ location_encoding = {
 }
 
 df['City_Code'] = df['City'].map(location_encoding)
+
+df = df.drop(columns=['datetime', 'City', 'Day_of_Week'])
+
+X = df.drop(columns=['Health_Risk_Score'])
+Y = df['Health_Risk_Score']
 
 def userInput(start_date,timerange,locationid,hour=12):
     loc_input = []
