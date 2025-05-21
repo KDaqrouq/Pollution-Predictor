@@ -10,10 +10,10 @@ df = df.drop(columns=[
     "sunset", "sunsetEpoch", "moonphase", "conditions", "description", "icon",
     "stations", "source", "Temp_Range", "Heat_Index", "Severity_Score",
     "Condition_Code","Season", "datetimeEpoch"
-])
+]) # dropped these columns because they are not needed for the model
 
 df['datetime'] = pd.to_datetime(df['datetime'])
-
+# encoded location and day of the week because they are categorical and the model needs quantitative data
 day_encoding = {
     'Monday': 0,
     'Tuesday': 1,
@@ -41,7 +41,8 @@ location_encoding = {
 
 df['City_Code'] = df['City'].map(location_encoding)
 
-df = df.drop(columns=['datetime', 'City', 'Day_of_Week'])
+df = df.drop(columns=['datetime', 'City', 'Day_of_Week','Month'])
+# decided to drop month because the in the dataset the month is constant (Sept.)
 
 X = df.drop(columns=['Health_Risk_Score'])
 Y = df['Health_Risk_Score']
