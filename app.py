@@ -1,5 +1,5 @@
 import streamlit as st
-from main import userInput, location_mapping
+from main import userInput, location_encoding
 from datetime import datetime
 from fakemodel import mock_long_term_predict
 import pandas as pd
@@ -8,12 +8,12 @@ st.title("Comparing Air Quality")
 
 locA_input = st.selectbox(
     "What is the first location?",
-    location_mapping.keys(),
+    location_encoding.keys(),
 )
 print(locA_input)
 locaB_input = st.selectbox(
     "What is the second location?",
-    location_mapping.keys(),
+    location_encoding.keys(),
 )
 
 timerange_input = st.selectbox(
@@ -36,8 +36,8 @@ period = timeRange(timerange_input)
 x = st.button(f"Compare {locA_input} and {locaB_input}")
 
 if x:
-    locationA_inputs = userInput(today,period,location_mapping[locA_input])
-    locationB_inputs = userInput(today,period,location_mapping[locaB_input])
+    locationA_inputs = userInput(today, period, location_encoding[locA_input])
+    locationB_inputs = userInput(today, period, location_encoding[locaB_input])
 
     aqi_A = mock_long_term_predict(locationA_inputs)
     aqi_B = mock_long_term_predict(locationB_inputs)
