@@ -1,64 +1,68 @@
 import streamlit as st
-from main import userInput, location_encoding
+from main import location_encoding, df
 from datetime import datetime
-from fakemodel import mock_long_term_predict
+import joblib
 import pandas as pd
 
-st.title("Comparing Air Quality")
+model = joblib.load("healthriskscore_model.pkl")
 
-locA_input = st.selectbox(
+st.title("Comparing Health Risk Score Across Two Cities")
+
+city1 = st.selectbox(
     "What is the first location?",
     location_encoding.keys(),
 )
-print(locA_input)
-locaB_input = st.selectbox(
+
+city2 = st.selectbox(
     "What is the second location?",
     location_encoding.keys(),
 )
 
-timerange_input = st.selectbox(
-    "Over how long?",
-    ("Week", "Month", "Year"),
-)
+start_date = st.date_input("Start date (must be in September)", datetime(2025, 9, 1))
+end_date = st.date_input("End date (must be in September)", datetime(2025, 9, 7))
 
-today = datetime.today()
+if start_date.month != 9 or end_date.month != 9:
+    st.warning("Please make sure the date is in September or the result may be inaccurate!")
+else:
+    city_averages = df.groupby('City_Code').agg({
+        'temp': 'mean',
+        'dew': 'mean',
+        'humidity': 'mean',
+        'precip': 'mean',
+        'precipprob': 'mean',
+        'windgust': 'mean',
+        'windspeed': 'mean',
+        'pressure': 'mean',
+        'cloudcover': 'mean',
+        'visibility': 'mean',
+        'solarradiation': 'mean',
+        'solarenergy': 'mean',
+        'uvindex': 'mean',
+        'Day_Code': 'mean',
+        'Health_Risk_Score': 'mean'
+    }).round(3)
 
-def timeRange(time):
-    if time == "Week":
-        return 7
-    elif time == "Month":
-        return 30
-    elif time == "Year":
-        return 365
+    code1 = location_encoding[city1]
+    code2 = location_encoding[city2]
 
-period = timeRange(timerange_input)
+    def prepare_model_features(city_code):
+        row_df = city_averages.loc[[city_code]]
+        df = row_df.drop(columns=['Health_Risk_Score'])
+        df['City_Code'] = df.index
+        return df
 
-x = st.button(f"Compare {locA_input} and {locaB_input}")
+    inputs1 = prepare_model_features(code1)
+    inputs2 = prepare_model_features(code2)
 
-if x:
-    locationA_inputs = userInput(today, period, location_encoding[locA_input])
-    locationB_inputs = userInput(today, period, location_encoding[locaB_input])
+    pred1 = model.predict(inputs1)
+    pred2 = model.predict(inputs2)
 
-    aqi_A = mock_long_term_predict(locationA_inputs)
-    aqi_B = mock_long_term_predict(locationB_inputs)
+    avg1_score = pred1[0]
+    avg2_score = pred2[0]
 
-    avg_A = sum(aqi_A) / len(aqi_A)
-    avg_B = sum(aqi_B) / len(aqi_B)
+    st.markdown(f"Average Health Risk:")
+    st.markdown(f"- {city1}: `{avg1_score:.2f}`")
+    st.markdown(f"- {city2}: `{avg2_score:.2f}`")
 
-    dates = [(today - pd.Timedelta(days=i)).strftime("%Y-%m-%d") for i in range(period)][::-1]
-
-    aqi_data = pd.DataFrame({
-        f"{locA_input}": aqi_A,
-        f"{locaB_input}": aqi_B
-    }, index=dates)
-
-    st.subheader("AQI Over Time")
-
-    st.line_chart(aqi_data)
-
-    st.write(f"{locA_input} has an average pollution score of {avg_A:.2f} and {locaB_input} has an average pollution score of {avg_B:.2f}.")
-
-    if aqi_A < aqi_B:
-        st.write(f"{locA_input} is the cleaner city!")
-    else:
-        st.write(f"{locaB_input} is the cleaner city!")
+    winner = city1 if avg1_score < avg2_score else city2
+    st.success(f"{winner} is healthier during this time period.")

@@ -1,7 +1,6 @@
 import pandas as pd
-from datetime import datetime, timedelta
 
-df = pd.read_csv(r"D:\Coding\Hackathon\Urban Air Quality and Health Impact Dataset.csv")
+df = pd.read_csv(r"C:\Users\Taysir\khaled\Pollution-Predictor\Urban Air Quality and Health Impact Dataset.csv")
 
 df = df.drop(columns=[
     "tempmax", "tempmin", "feelslikemax", "feelslikemin",
@@ -41,19 +40,9 @@ location_encoding = {
 
 df['City_Code'] = df['City'].map(location_encoding)
 
-df = df.drop(columns=['datetime', 'City', 'Day_of_Week','Month'])
+df = df.drop(columns=['datetime', 'City', 'Day_of_Week', 'Month','Is_Weekend'])
 # decided to drop month because the in the dataset the month is constant (Sept.)
+# decided to drop Is Weekend after parameter tuning and finding increased model accuracy
 
 X = df.drop(columns=['Health_Risk_Score'])
 Y = df['Health_Risk_Score']
-
-def userInput(start_date,timerange,locationid,hour=12):
-    loc_input = []
-
-    for i in range(timerange): # time range = number of days looping through
-        future_date = start_date + timedelta(days=i)
-        dayofweek = future_date.weekday()
-        month = future_date.month
-        dayofyear = future_date.timetuple().tm_yday
-        loc_input.append([hour,dayofweek,month,dayofyear,locationid])
-    return loc_input
