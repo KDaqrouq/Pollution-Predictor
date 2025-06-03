@@ -1,5 +1,5 @@
 import streamlit as st
-from main import location_encoding, df
+from main import location_encoding, df, df_with_date
 from datetime import datetime
 import joblib
 import pandas as pd
@@ -18,8 +18,8 @@ city2 = st.selectbox(
     location_encoding.keys(),
 )
 
-start_date = st.date_input("Start date (must be in September)", datetime(2025, 9, 1))
-end_date = st.date_input("End date (must be in September)", datetime(2025, 9, 7))
+start_date = st.date_input("Start date (must be in September)", datetime(2024, 9, 1), min_value=datetime(2024, 9, 1))
+end_date = st.date_input("End date (must be in September)", datetime(2024, 9, 7), max_value=datetime(2024, 9, 30))
 
 if start_date.month != 9 or end_date.month != 9:
     st.warning("Please make sure the date is in September or the result may be inaccurate!")

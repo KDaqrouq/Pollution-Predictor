@@ -40,6 +40,8 @@ location_encoding = {
 
 df['City_Code'] = df['City'].map(location_encoding)
 
+df_with_date = df.drop(columns=['City', 'Day_of_Week', 'Month','Is_Weekend'])
+
 df = df.drop(columns=['datetime', 'City', 'Day_of_Week', 'Month','Is_Weekend'])
 # decided to drop month because the in the dataset the month is constant (Sept.)
 # decided to drop Is Weekend after parameter tuning and finding increased model accuracy
