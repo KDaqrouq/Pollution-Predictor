@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv(r"C:\Users\Taysir\khaled\Pollution-Predictor\Urban Air Quality and Health Impact Dataset.csv")
+df = pd.read_csv("Urban Air Quality and Health Impact Dataset.csv")
 
 df = df.drop(columns=[
     "tempmax", "tempmin", "feelslikemax", "feelslikemin",
