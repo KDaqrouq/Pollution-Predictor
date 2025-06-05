@@ -11,10 +11,10 @@ rf = model.fit(X_train, Y_train)
 
 joblib.dump(rf, "healthriskscore_model.pkl")
 
+pred_health_risk_score = rf.predict(X_test)
+
 def features():
     print(rf.feature_importances_, rf.feature_names_in_)
-
-pred_health_risk_score = rf.predict(X_test)
 
 def metrics():
     r2 = r2_score(Y_test, pred_health_risk_score)
