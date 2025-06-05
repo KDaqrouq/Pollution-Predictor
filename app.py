@@ -4,8 +4,6 @@ from datetime import datetime
 import joblib
 import pandas as pd
 
-date_counts = df_with_date['datetime'].value_counts().sort_index()
-
 model = joblib.load("healthriskscore_model.pkl")
 
 st.title("Comparing Health Risk Score Across Two Cities")
