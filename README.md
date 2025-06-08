@@ -1,6 +1,6 @@
 # Health Risk Score Comparator (Urban U.S. Cities)
 
-A machine learning project that predicts health risk scores for major U.S. cities using air quality and environmental data. The web app includes a **City Comparison Tool** that lets users compare which city is healthier to live in.
+A machine learning project that predicts health risk scores for major U.S. cities using air quality and environmental data. The web app includes a City Comparison Tool that lets users compare which city is healthier to live in.
 
 **Model Performance:**  
 - R² score: 97%  
@@ -30,8 +30,7 @@ A machine learning project that predicts health risk scores for major U.S. citie
     - `visibility`: Visibility  
     - `solarradiation`: Solar radiation  
     - `solarenergy`: Solar energy  
-    - `uvindex`: UV index  
-    - `Day_Code`: Day-of-week code  
+    - `uvindex`: UV index    
     - `City_Code`: Encoded city code 
 - **Reusable Model Pipeline:** Trained model saved with `joblib` for fast inference.
 
@@ -40,7 +39,6 @@ A machine learning project that predicts health risk scores for major U.S. citie
 - **Python** (main language)
 - **Pandas**, **Scikit-learn**
 - **Streamlit** for the web app
-- **Joblib** for model serialization
 
 ## Live Demo
 
