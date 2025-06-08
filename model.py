@@ -20,3 +20,5 @@ def metrics():
     r2 = r2_score(Y_test, pred_health_risk_score)
     print(f'r2 score: {r2}')
     print(f"OOB score: {rf.oob_score_}")
+
+metrics()
